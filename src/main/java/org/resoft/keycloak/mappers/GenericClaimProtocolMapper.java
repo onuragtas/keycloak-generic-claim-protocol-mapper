@@ -1,4 +1,4 @@
-package org.resoft.keycloak.mapper;
+package org.resoft.keycloak.mappers;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 import org.keycloak.models.ClientSessionContext;
