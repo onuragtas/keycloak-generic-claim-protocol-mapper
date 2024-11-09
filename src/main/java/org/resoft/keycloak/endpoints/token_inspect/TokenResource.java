@@ -15,6 +15,12 @@ public class TokenResource {
         this.auth = new AppAuthManager.BearerTokenAuthenticator(session).authenticate();
     }
 
+    @OPTIONS
+    @Path("{any:.*}")
+    public Response preflight() {
+        return Response.ok().header("Access-Control-Allow-Origin", "*").build();
+    }
+
     @GET
     @Path("")
     @Produces({MediaType.APPLICATION_JSON})
