@@ -1,11 +1,3 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Java CI with Maven
 
 on:
@@ -21,16 +13,38 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         java-version: '23'
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+    - name: Get Tag Name
+      id: get_tag
+      run: echo "tag=$(git describe --tags --abbrev=0 || echo 'v1.0.0')" >> $GITHUB_ENV
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.tag }} # Dinamik olarak belirlenen tag
+        release_name: "Release ${{ env.tag }}" # Dinamik release ismi
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: /home/runner/work/keycloak-generic-claim-protocol-mapper/keycloak-generic-claim-protocol-mapper/target/protocol-mapper-1.1-SNAPSHOT-shaded.jar
+        asset_name: generic-protocol-mapper-1.1-SNAPSHOT-shaded.jar
+        asset_content_type: application/java-archive
