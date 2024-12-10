@@ -26,7 +26,7 @@ jobs:
 
     - name: Generate Timestamp Tag
       id: generate_tag
-      run: echo "TAG=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+      run: echo "TAG=$(date +'%Y-%m-%d_%H:%M:%S')" >> $GITHUB_ENV
 
     - name: Create GitHub Release
       env:
