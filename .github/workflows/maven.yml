@@ -24,13 +24,9 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Get Tag Name
-      id: get_tag
-      run: echo "tag=$(git describe --tags --abbrev=0 || echo 'v1.0.0')" >> $GITHUB_ENV
-
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -40,7 +36,7 @@ jobs:
         prerelease: false
 
     - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
