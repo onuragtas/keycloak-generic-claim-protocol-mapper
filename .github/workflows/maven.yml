@@ -30,7 +30,7 @@ jobs:
 
     - name: Create GitHub Release
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GH_TOKEN: ${{ secrets.TOKEN }}
       run: |
         gh release create ${{ env.TAG }} /home/runner/work/keycloak-generic-claim-protocol-mapper/keycloak-generic-claim-protocol-mapper/target/protocol-mapper*.jar \
           --title "Release ${{ env.TAG }}" \
