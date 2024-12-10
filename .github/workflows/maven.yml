@@ -24,23 +24,18 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Create Release
-      id: create_release
-      uses: comnoco/create-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: tag=$(date +'%Y%m%d%H%M%S')
-        release_name: "Release tag=$(date +'%Y%m%d%H%M%S')"
-        draft: false
-        prerelease: false
+    - name: Generate Timestamp Tag
+      id: generate_tag
+      run: echo "TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+    - name: Create GitHub Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: /home/runner/work/keycloak-generic-claim-protocol-mapper/keycloak-generic-claim-protocol-mapper/target/protocol-mapper-1.1-SNAPSHOT-shaded.jar
-        asset_name: generic-protocol-mapper-1.1-SNAPSHOT-shaded.jar
-        asset_content_type: application/java-archive
+      run: |
+        gh release create ${{ env.TAG }} ./target/protocol-mapper-1.1-SNAPSHOT-shaded.jar \
+          --title "Release ${{ env.TAG }}" \
+          --notes "Automatically generated release" \
+          --target main
+
+    - name: Verify Release
+      run: gh release view ${{ env.TAG }}
