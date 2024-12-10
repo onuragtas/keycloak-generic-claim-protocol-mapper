@@ -34,8 +34,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.tag }} # Dinamik olarak belirlenen tag
-        release_name: "Release ${{ env.tag }}" # Dinamik release ismi
+        tag_name: tag=$(date +'%Y%m%d%H%M%S')
+        release_name: "Release tag=$(date +'%Y%m%d%H%M%S')"
         draft: false
         prerelease: false
 
