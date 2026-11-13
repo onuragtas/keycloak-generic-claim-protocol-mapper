@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
 
@@ -30,7 +33,7 @@ jobs:
 
     - name: Create GitHub Release
       env:
-        GH_TOKEN: ${{ secrets.TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh release create ${{ env.TAG }} /home/runner/work/keycloak-generic-claim-protocol-mapper/keycloak-generic-claim-protocol-mapper/target/protocol-mapper*.jar \
           --title "Release ${{ env.TAG }}" \
@@ -39,5 +42,5 @@ jobs:
 
     - name: Verify Release
       env:
-        GH_TOKEN: ${{ secrets.TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: gh release view ${{ env.TAG }}
